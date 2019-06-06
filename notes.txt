@@ -1,0 +1,27 @@
+things to do:
+
+1. overall design
+2. creating calender with events
+3. show map with pointer to destination
+4. add email for email subscribtion
+    b. connect it to emailing service
+
+
+======
+
+comments:
+
+======
+
+relevant commands:
+ssh-keygen
+ssh root@204.48.25.30
+
+------
+
+docker-compose down 
+    #remove old images. Resets database. DO NOT DO THIS UNLESS YOU ARE SURE
+docker-compose build 
+    #build up new images. Does not reset database. Use this when making changes
+docker-compose up 
+    #run everything
