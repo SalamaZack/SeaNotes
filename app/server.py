@@ -1,35 +1,31 @@
-from flask import Flask, request, jsonify
+from flask import Flask, redirect, url_for, request, render_template
 from pymongo import MongoClient
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://db:27017/')
-# client = MongoClient('mongodb://localhost:27017/')
-db = client.test_database
+client = MongoClient('mongo', 27017)
+db = client.tododb
 
 
-@app.route("/")
-def hello():
-    return "Test!"
+@app.route('/')
+def todo():
+
+    _items = db.tododb.find()
+    items = [item for item in _items]
+
+    return render_template('index.html', items=items)
 
 
-# to check DB connection:
-@app.route("/users", methods=['GET', 'POST'])
-def users_route():
-    if request.method == 'GET':
-        users = []
-        for user in db.users.find():
-            users.append(user.get("name", ""))
-        return jsonify({"status": "success", "payload": users})
-    elif request.method == 'POST':
-        try:
-            name = request.form["name"]
-            user_id = db.users.insert_one({'name': name}).inserted_id
-            return jsonify({"status": "success", "payload": str(user_id)})
-        except Exception:
-            return jsonify({"status": "failed", "payload": "Please insert a name"})
+@app.route('/new', methods=['POST'])
+def new():
 
+    item_doc = {
+        'name': request.form['name'],
+        'description': request.form['description']
+    }
+    db.tododb.insert_one(item_doc)
+
+    return redirect(url_for('todo'))
 
 if __name__ == "__main__":
-    # app.run(host="localhost", debug=True)
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host='0.0.0.0', debug=True)
