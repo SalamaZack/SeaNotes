@@ -1,15 +1,31 @@
 from flask import Flask, redirect, url_for, request, render_template
 from pymongo import MongoClient
-from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-Bootstrap(app)
-app.static_folder = 'static'
+
+client = MongoClient('mongo', 27017)
+db = client.tododb
 
 
 @app.route('/')
 def todo():
-    return render_template('index.html')
+
+    _items = db.tododb.find()
+    items = [item for item in _items]
+
+    return render_template('index.html', items=items)
+
+
+@app.route('/new', methods=['POST'])
+def new():
+
+    item_doc = {
+        'name': request.form['name'],
+        'description': request.form['description']
+    }
+    db.tododb.insert_one(item_doc)
+
+    return redirect(url_for('todo'))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

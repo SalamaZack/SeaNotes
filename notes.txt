@@ -25,8 +25,3 @@ docker-compose build
     #build up new images. Does not reset database. Use this when making changes
 docker-compose up 
     #run everything
-
-------
-
-links:
-https://github.com/brettvanderwerff/Reddit-Guestbook/blob/master/templates/base.html
